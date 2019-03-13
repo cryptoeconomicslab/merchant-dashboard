@@ -5,7 +5,8 @@
     "build": "next build",
     "start": "next start src",
     "tsc": "tsc --no-emit",
-    "lint": "tslint ./src/**/*"
+    "lint": "tslint ./src/**/*",
+    "format": "tslint ./src/**/* --fix"
   },
   "dependencies": {
     "@layer2/wallet": "^0.0.29",
