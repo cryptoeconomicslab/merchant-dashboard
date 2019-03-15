@@ -11,14 +11,35 @@ export default class MyDocument extends Document {
       <html>
         <Head>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
-          />
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/icon?family=Material+Icons"
-          />
+          <style>{`
+            *,
+            *:after,
+            *:before {
+              margin: 0;
+              padding: 0;
+              box-sizing: inherit;
+            }
+
+            html {
+              font-size: 62.5%;
+            }
+
+            body {
+              box-sizing: border-box;
+              font-family: Avenir, Avenir Next, Open Sans, sans-serif;
+              font-weight: 400;
+              font-size: 1.6rem;
+              line-height: 1.6;
+            }
+
+            input {
+              font-family: inherit;
+              padding: 8px;
+              border: none;
+              border-radius: 4px;
+              font-size: 1.6rem;
+            }
+          `}</style>
         </Head>
         <body>
           <Main />
