@@ -25,7 +25,7 @@ class Config extends React.Component<StateProps & DispatchProps> {
   }
 
   public render() {
-    return <Layout>Config</Layout>
+    return <Layout title="Configuration">Config</Layout>
   }
 }
 

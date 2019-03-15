@@ -25,7 +25,7 @@ class FastFinality extends React.Component<StateProps & DispatchProps> {
   }
 
   public render() {
-    return <Layout>FastFinality</Layout>
+    return <Layout title="FastFinality">FastFinality</Layout>
   }
 }
 

@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { FONT_SIZE } from '../constants/size'
 
-const Header = () => {
+const Header = ({ title }) => {
   return (
     <header>
-      <h1 className="title">Dashboard</h1>
+      <h1 className="title">{title}</h1>
       <style jsx>{`
         header {
           height: 60px;

@@ -25,7 +25,7 @@ class App extends React.Component<StateProps & DispatchProps> {
   }
 
   public render() {
-    return <Layout>Hello</Layout>
+    return <Layout title="Wallet">Hello</Layout>
   }
 }
 

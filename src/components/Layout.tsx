@@ -13,7 +13,7 @@ const sidebarStyle = {
   }
 }
 
-const Layout = ({ children }) => (
+const Layout = ({ children, title }) => (
   <div className="container">
     <Sidebar
       sidebar={<SidebarContent />}
@@ -23,7 +23,7 @@ const Layout = ({ children }) => (
       open
       docked
     >
-      <Header />
+      <Header title={title} />
       <main className="body">{children}</main>
     </Sidebar>
     <style jsx>{`
