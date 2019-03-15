@@ -39,6 +39,8 @@ export default class MyDocument extends Document {
               border-radius: 4px;
               font-size: 1.6rem;
             }
+
+            a { color: inherit; } 
           `}</style>
         </Head>
         <body>

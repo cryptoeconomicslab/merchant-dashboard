@@ -3,13 +3,13 @@ import Sidebar from 'react-sidebar'
 import SidebarContent from './Sidebar'
 import Header from './Header'
 import colors from '../constants/colors'
-import { SIDEBAR_WIDTH } from '../constants/size'
+import { SIDEBAR_WIDTH, PADDING } from '../constants/size'
 
 // override react-sidebar style
 const sidebarStyle = {
   sidebar: {
-    backgroundColor: colors.BG_INVERSE,
-    color: colors.TEXT_INVERSE
+    backgroundColor: colors.BG_MAIN,
+    color: colors.TEXT_MAIN
   }
 }
 
@@ -19,14 +19,18 @@ const Layout = ({ children }) => (
       sidebar={<SidebarContent />}
       styles={sidebarStyle}
       defaultSidebarWidth={SIDEBAR_WIDTH}
-      shadow={false}
+      shadow
       open
       docked
     >
       <Header />
       <main className="body">{children}</main>
     </Sidebar>
-    <style jsx>{``}</style>
+    <style jsx>{`
+      .body {
+        padding: ${PADDING.MEDIUM};
+      }
+    `}</style>
   </div>
 )
 

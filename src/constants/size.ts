@@ -39,7 +39,7 @@ const BORDER = {
   THICK: '2px'
 }
 
-const SIDEBAR_WIDTH = 40
+const SIDEBAR_WIDTH = 48
 
 export {
   FONT_SIZE,

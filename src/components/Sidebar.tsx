@@ -1,25 +1,57 @@
 import * as React from 'react'
+import Link from 'next/link'
+import { withRouter } from 'next/router'
+import { FaCheck, FaMoneyBill, FaCog } from 'react-icons/fa'
 import { SIDEBAR_WIDTH } from '../constants/size'
+import colors from '../constants/colors'
 
-const SidebarItem = ({ children }) => {
+const SidebarItem = ({ href, children }) => {
   return (
     <li>
-      {children}
+      <Link href={href}>
+        <a>{children}</a>
+      </Link>
       <style jsx>{`
         li {
+          width: 100%;
+          height: 4.8rem;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        a {
+          transition: opacity 0.1s linear;
+        }
+
+        a:hover {
+          opacity: 0.6;
         }
       `}</style>
     </li>
   )
 }
 
-const SidebarContent = () => {
+const SidebarContent = ({ router }) => {
+  const path = router.pathname
+
   return (
     <ul>
-      <SidebarItem>1</SidebarItem>
-      <SidebarItem>2</SidebarItem>
-      <SidebarItem>3</SidebarItem>
-      <SidebarItem>4</SidebarItem>
+      <SidebarItem href="/">
+        <FaCheck size={30} color={path === '/' ? colors.COLOR_PRIMARY : ''} />
+      </SidebarItem>
+      <SidebarItem href="/FastFinality">
+        <FaMoneyBill
+          size={30}
+          color={path === '/FastFinality' ? colors.COLOR_PRIMARY : ''}
+        />
+      </SidebarItem>
+      <SidebarItem href="/Config">
+        <FaCog
+          size={30}
+          color={path === '/Config' ? colors.COLOR_PRIMARY : ''}
+        />
+      </SidebarItem>
       <style jsx>{`
         ul {
           width: ${SIDEBAR_WIDTH}px;
@@ -29,4 +61,4 @@ const SidebarContent = () => {
   )
 }
 
-export default SidebarContent
+export default withRouter(SidebarContent)
