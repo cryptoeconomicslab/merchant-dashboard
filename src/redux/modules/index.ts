@@ -1,7 +1,12 @@
 import { combineReducers } from 'redux'
+import chamberWalletReducer, {
+  State as ChamberWalletState
+} from './chamberWallet'
 
-const testReducer = () => {
-  return {}
+export interface AppState {
+  chamberWallet: ChamberWalletState
 }
 
-export default combineReducers({ testReducer })
+export default combineReducers({
+  chamberWallet: chamberWalletReducer
+})
