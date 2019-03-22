@@ -9,7 +9,7 @@
     "format": "tslint ./src/**/* --fix"
   },
   "dependencies": {
-    "@layer2/wallet": "^0.0.32",
+    "@layer2/wallet": "^0.0.34",
     "@zeit/next-typescript": "^1.1.1",
     "next": "^8.0.3",
     "next-redux-wrapper": "^3.0.0-alpha.2",
