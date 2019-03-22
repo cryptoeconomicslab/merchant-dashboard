@@ -16,7 +16,7 @@ interface DispatchProps {
   loadWallet: () => void
 }
 
-class FastFinality extends React.Component<StateProps & DispatchProps> {
+class Transactions extends React.Component<StateProps & DispatchProps> {
   public componentDidMount() {
     const { wallet, loadWallet } = this.props
     if (wallet.status === WALLET_STATUS.INITIAL) {
@@ -34,4 +34,4 @@ export default connect(
     wallet: state.chamberWallet.wallet
   }),
   { loadWallet }
-)(FastFinality)
+)(Transactions)

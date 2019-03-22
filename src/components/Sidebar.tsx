@@ -40,10 +40,10 @@ const SidebarContent = ({ router }) => {
       <SidebarItem href="/">
         <FaCheck size={30} color={path === '/' ? colors.COLOR_PRIMARY : ''} />
       </SidebarItem>
-      <SidebarItem href="/FastFinality">
+      <SidebarItem href="/Transactions">
         <FaMoneyBill
           size={30}
-          color={path === '/FastFinality' ? colors.COLOR_PRIMARY : ''}
+          color={path === '/Transactions' ? colors.COLOR_PRIMARY : ''}
         />
       </SidebarItem>
       <SidebarItem href="/Config">
