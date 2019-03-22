@@ -7,6 +7,8 @@ import {
   loadWallet
 } from '../redux/modules/chamberWallet/wallet'
 import Layout from '../components/Layout'
+import QRSection from '../components/config/QRSection'
+import { FONT_SIZE } from '../constants/size'
 
 interface StateProps {
   wallet: WalletState
@@ -25,7 +27,24 @@ class Config extends React.Component<StateProps & DispatchProps> {
   }
 
   public render() {
-    return <Layout title="Configuration">Config</Layout>
+    const { wallet } = this.props
+    return (
+      <Layout title="Configuration">
+        {/* wallet status condition */
+        wallet.status === WALLET_STATUS.INITIAL ||
+        wallet.status === WALLET_STATUS.LOADING ? (
+          <div>LOADING...</div>
+        ) : wallet.status === WALLET_STATUS.LOADED ? (
+          <QRSection walletRef={wallet.ref} />
+        ) : null}
+        <style jsx>{`
+          .title {
+            font-size: ${FONT_SIZE.LARGE};
+            padding: 1.2rem;
+          }
+        `}</style>
+      </Layout>
+    )
   }
 }
 
