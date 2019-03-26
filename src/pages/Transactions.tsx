@@ -6,7 +6,9 @@ import {
   WALLET_STATUS,
   loadWallet
 } from '../redux/modules/chamberWallet/wallet'
+import CreateWalletSection from '../components/wallet/CreateWalletSection'
 import Layout from '../components/Layout'
+import TransactionSection from '../components/transactions/TransactionSection'
 
 interface StateProps {
   wallet: WalletState
@@ -25,7 +27,22 @@ class Transactions extends React.Component<StateProps & DispatchProps> {
   }
 
   public render() {
-    return <Layout title="FastFinality">FastFinality</Layout>
+    const { wallet } = this.props
+    return (
+      <Layout>
+        {/* wallet status condition */
+        wallet.status === WALLET_STATUS.INITIAL ||
+        wallet.status === WALLET_STATUS.LOADING ? (
+          <div>LOADING...</div>
+        ) : wallet.status === WALLET_STATUS.LOADED ? (
+          <TransactionSection />
+        ) : wallet.status === WALLET_STATUS.NO_WALLET ? (
+          <CreateWalletSection />
+        ) : wallet.status === WALLET_STATUS.ERROR ? (
+          <div>{wallet.error.message}</div>
+        ) : null}
+      </Layout>
+    )
   }
 }
 

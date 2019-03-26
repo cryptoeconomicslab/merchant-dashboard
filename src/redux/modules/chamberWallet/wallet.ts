@@ -2,6 +2,7 @@ import { Dispatch } from 'redux'
 import { ChamberWallet } from '@layer2/wallet'
 import WalletFactory from '../../../helpers/wallet'
 import delay from '../../../utils/delay'
+import { SignedTransaction } from '@layer2/core'
 
 // CONSTANTS
 export enum WALLET_STATUS {
@@ -18,7 +19,8 @@ export enum WALLET_ACTION_TYPES {
   LOAD_WALLET_SUCCESS = 'LOAD_WALLET_SUCCESS',
   LOAD_WALLET_FAIL = 'LOAD_WALLET_FAIL',
   CLEAR_WALLET_ERROR = 'CLEAR_WALLET_ERROR',
-  SET_WALLET_STATUS = 'SET_WALLET_STATUS'
+  SET_WALLET_STATUS = 'SET_WALLET_STATUS',
+  RECEIVE_TRANSACTION = 'RECEIVE_TRANSACTION'
 }
 
 // Action creators
@@ -45,17 +47,24 @@ export const setWalletStatus = (status: WALLET_STATUS) => ({
   payload: status
 })
 
+const receiveTransaction = value => ({
+  type: WALLET_ACTION_TYPES.RECEIVE_TRANSACTION,
+  payload: value
+})
+
 // Reducer
 export interface State {
   status: WALLET_STATUS
   error: Error | null
   ref: ChamberWallet | null
+  txs: SignedTransaction[] // TODO: there must be better way
 }
 
 const initialState: State = {
   status: WALLET_STATUS.INITIAL,
   ref: null,
-  error: null
+  error: null,
+  txs: []
 }
 
 interface WalletAction {
@@ -93,6 +102,11 @@ const reducer = (state: State = initialState, action: WalletAction): State => {
         status: WALLET_STATUS.INITIAL,
         error: null
       }
+    case WALLET_ACTION_TYPES.RECEIVE_TRANSACTION:
+      return {
+        ...state,
+        txs: [action.payload, ...state.txs]
+      }
     default:
       return state
   }
@@ -101,6 +115,14 @@ const reducer = (state: State = initialState, action: WalletAction): State => {
 export default reducer
 
 // Thunks
+const onWalletLoaded = (wallet: ChamberWallet, dispatch: Dispatch) => {
+  dispatch(loadWalletSuccess(wallet))
+  // TODO: how to load transactions on initial mount
+  wallet.addListener('receive', value => {
+    dispatch(receiveTransaction(value))
+  })
+}
+
 export const loadWallet = () => {
   return async (dispatch: Dispatch) => {
     dispatch(loadWalletStart())
@@ -108,7 +130,7 @@ export const loadWallet = () => {
     // Load wallet if in storage
     const wallet = WalletFactory.loadWallet()
     if (wallet) {
-      dispatch(loadWalletSuccess(wallet))
+      onWalletLoaded(wallet, dispatch)
     } else {
       dispatch(setWalletStatus(WALLET_STATUS.NO_WALLET))
     }
@@ -123,7 +145,7 @@ export const createWallet = (privateKey: string) => {
 
     try {
       const wallet = WalletFactory.createWallet({ privateKey })
-      dispatch(loadWalletSuccess(wallet))
+      onWalletLoaded(wallet, dispatch)
     } catch (e) {
       dispatch(loadWalletFail(e)) // TODO: make custom error ErrorCreateWallet
     }

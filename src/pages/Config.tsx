@@ -29,7 +29,7 @@ class Config extends React.Component<StateProps & DispatchProps> {
   public render() {
     const { wallet } = this.props
     return (
-      <Layout title="Configuration">
+      <Layout>
         {/* wallet status condition */
         wallet.status === WALLET_STATUS.INITIAL ||
         wallet.status === WALLET_STATUS.LOADING ? (

@@ -9,7 +9,6 @@ import {
   loadWallet
 } from '../redux/modules/chamberWallet/wallet'
 import Layout from '../components/Layout'
-import { FONT_SIZE } from '../constants/size'
 
 interface StateProps {
   wallet: WalletState
@@ -19,9 +18,10 @@ interface DispatchProps {
   loadWallet: () => void
 }
 
-class App extends React.Component<StateProps & DispatchProps> {
+type Props = StateProps & DispatchProps
+
+class App extends React.Component<Props> {
   public componentDidMount() {
-    // TODO: subscribe receive event
     const { wallet, loadWallet } = this.props
     if (wallet.status === WALLET_STATUS.INITIAL) {
       loadWallet()
@@ -32,7 +32,7 @@ class App extends React.Component<StateProps & DispatchProps> {
     const { wallet } = this.props
 
     return (
-      <Layout title="Wallet">
+      <Layout>
         {/* wallet status condition */
         wallet.status === WALLET_STATUS.INITIAL ||
         wallet.status === WALLET_STATUS.LOADING ? (
@@ -44,12 +44,6 @@ class App extends React.Component<StateProps & DispatchProps> {
         ) : wallet.status === WALLET_STATUS.ERROR ? (
           <div>{wallet.error.message}</div>
         ) : null}
-        <style jsx>{`
-          .title {
-            font-size: ${FONT_SIZE.LARGE};
-            padding: 1.2rem;
-          }
-        `}</style>
       </Layout>
     )
   }

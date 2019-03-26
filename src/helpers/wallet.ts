@@ -1,7 +1,10 @@
 import { ChamberWallet, PlasmaClient, IWalletStorage } from '@layer2/wallet'
+import { OwnState } from '@layer2/core'
 import { WalletStorage } from './storage'
 import { JsonRpcClient } from './jsonrpc'
 import { MQTTClient } from './mqtt'
+
+OwnState.setAddress('0x9fbda871d559710256a2502a2517b794b482db40')
 
 // TODO: add mnemonic
 interface CreateWalletArgs {
@@ -28,7 +31,7 @@ export default class WalletFactory {
         process.env.ROOTCHAIN_ADDRESS,
         storage,
         privateKey,
-        { isMerchant: true } // TODO: maybe change
+        { isMerchant: true } // maybe change
       )
       ;(window as any).wallet = wallet
       // TODO: how to save privateKey?

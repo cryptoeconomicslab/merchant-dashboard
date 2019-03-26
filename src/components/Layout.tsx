@@ -1,7 +1,6 @@
 import * as React from 'react'
 import Sidebar from 'react-sidebar'
 import SidebarContent from './Sidebar'
-import Header from './Header'
 import colors from '../constants/colors'
 import { SIDEBAR_WIDTH, PADDING } from '../constants/size'
 
@@ -13,7 +12,7 @@ const sidebarStyle = {
   }
 }
 
-const Layout = ({ children, title }) => (
+const Layout = ({ children }) => (
   <div className="container">
     <Sidebar
       sidebar={<SidebarContent />}
@@ -23,12 +22,11 @@ const Layout = ({ children, title }) => (
       open
       docked
     >
-      <Header title={title} />
       <main className="body">{children}</main>
     </Sidebar>
     <style jsx>{`
       .body {
-        padding: ${PADDING.MEDIUM};
+        padding: 0 ${PADDING.MEDIUM};
       }
     `}</style>
   </div>
