@@ -21,6 +21,7 @@ interface DispatchProps {
 
 class App extends React.Component<StateProps & DispatchProps> {
   public componentDidMount() {
+    // TODO: subscribe receive event
     const { wallet, loadWallet } = this.props
     if (wallet.status === WALLET_STATUS.INITIAL) {
       loadWallet()
