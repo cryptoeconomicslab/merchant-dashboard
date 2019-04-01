@@ -8,7 +8,9 @@ const QRSection = ({ walletRef }: { walletRef: ChamberWallet }) => {
     'http://localhost:8080'}/transfer?address=${address}&amount=0&isFF=true`
   return (
     <div>
+      <h2>Merchant address</h2>
       <QRCode value={value} renderAs="svg" />
+      <span>{address}</span>
     </div>
   )
 }
