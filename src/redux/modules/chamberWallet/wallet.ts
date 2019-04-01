@@ -2,7 +2,7 @@ import { Dispatch } from 'redux'
 import { ChamberWallet } from '@layer2/wallet'
 import WalletFactory from '../../../helpers/wallet'
 import delay from '../../../utils/delay'
-import { SignedTransaction } from '@layer2/core'
+import { SignedTransaction, SignedTransactionWithProof } from '@layer2/core'
 
 // CONSTANTS
 export enum WALLET_STATUS {
@@ -57,7 +57,10 @@ export interface State {
   status: WALLET_STATUS
   error: Error | null
   ref: ChamberWallet | null
-  txs: SignedTransaction[] // TODO: there must be better way
+  txs: Array<{
+    tx: SignedTransaction | SignedTransactionWithProof
+    isFast: boolean | undefined
+  }>
 }
 
 const initialState: State = {
@@ -118,8 +121,14 @@ export default reducer
 const onWalletLoaded = (wallet: ChamberWallet, dispatch: Dispatch) => {
   dispatch(loadWalletSuccess(wallet))
   // TODO: how to load transactions on initial mount
+  console.log('addEventListeners')
   wallet.addListener('receive', value => {
+    console.log('received!!')
     dispatch(receiveTransaction(value))
+  })
+
+  wallet.addListener('updated', value => {
+    console.log('updated', value)
   })
 }
 
