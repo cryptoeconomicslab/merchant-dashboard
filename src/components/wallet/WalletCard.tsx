@@ -127,7 +127,6 @@ class WalletCard extends React.Component<
             height: 90vh;
             padding: 1.2rem;
             border-radius: 8px;
-            color: ${colors.TEXT_MAIN};
             margin: auto;
             overflow-y: scroll;
           }
