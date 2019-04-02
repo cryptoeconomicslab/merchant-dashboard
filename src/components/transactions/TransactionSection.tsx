@@ -20,13 +20,14 @@ class TransactionSection extends React.Component<StateProps> {
     const { ref } = this.props.wallet
     ref.off('updated', this.onUpdate)
   }
+
   public render() {
     const { wallet } = this.props
     return (
       <div>
         <h2>Transactions</h2>
-        {wallet.txs.map(({ tx, isFast }, i) => (
-          <TransactionItem key={i} tx={tx} isFast={isFast} />
+        {wallet.txs.map(({ tx, isFast, time }, i) => (
+          <TransactionItem key={i} tx={tx} isFast={isFast} time={time} />
         ))}
       </div>
     )

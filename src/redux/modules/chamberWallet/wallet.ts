@@ -60,6 +60,7 @@ export interface State {
   txs: Array<{
     tx: SignedTransaction | SignedTransactionWithProof
     isFast: boolean | undefined
+    time: Date
   }>
 }
 
@@ -124,7 +125,9 @@ const onWalletLoaded = (wallet: ChamberWallet, dispatch: Dispatch) => {
   console.log('addEventListeners')
   wallet.addListener('receive', value => {
     console.log('received!!')
-    dispatch(receiveTransaction(value))
+    // TODO: change timestamp
+    const time = new Date()
+    dispatch(receiveTransaction({ ...value, time }))
   })
 
   wallet.addListener('updated', value => {
