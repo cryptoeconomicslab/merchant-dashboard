@@ -9,10 +9,12 @@ import colors from '../../constants/colors'
 
 const TransactionItem = ({
   tx,
-  isFast
+  isFast,
+  time
 }: {
   tx: SignedTransaction | SignedTransactionWithProof
   isFast: boolean
+  time: Date
 }) => {
   console.info(tx, isFast)
 
@@ -38,11 +40,14 @@ const TransactionItem = ({
 
   return (
     <div className="container">
-      {isWithProof ? (
-        <span className="tag success">With Proof</span>
-      ) : (
-        <span className="tag warn">Without Proof</span>
-      )}
+      <div className="heading">
+        {isWithProof ? (
+          <span className="tag success">With Proof</span>
+        ) : (
+          <span className="tag warn">Without Proof</span>
+        )}
+        <span className="timestamp">{time.toISOString()}</span>
+      </div>
       <div>
         <label>From</label>
         <p className="value">{from}</p>
@@ -55,6 +60,16 @@ const TransactionItem = ({
         .container {
           padding: ${PADDING.MEDIUM};
           border: solid ${BORDER.THIN} ${colors.BORDER_COLOR_LIGHT};
+        }
+
+        .heading {
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .timestamp {
+          font-size: ${FONT_SIZE.MEDIUM};
+          color: ${colors.TEXT_MAIN};
         }
 
         label {

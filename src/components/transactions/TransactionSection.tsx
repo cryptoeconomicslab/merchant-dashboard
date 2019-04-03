@@ -9,16 +9,34 @@ interface StateProps {
 }
 
 class TransactionSection extends React.Component<StateProps> {
+  public async componentDidMount() {
+    const { ref } = this.props.wallet
+
+    ref.init()
+    ref.on('updated', this.onUpdate)
+  }
+
+  public componentWillUnmount() {
+    const { ref } = this.props.wallet
+    ref.off('updated', this.onUpdate)
+  }
+
   public render() {
     const { wallet } = this.props
     return (
       <div>
         <h2>Transactions</h2>
-        {wallet.txs.map(({ tx, isFast }, i) => (
-          <TransactionItem key={i} tx={tx} isFast={isFast} />
+        {wallet.txs.map(({ tx, isFast, time }, i) => (
+          <TransactionItem key={i} tx={tx} isFast={isFast} time={time} />
         ))}
       </div>
     )
+  }
+
+  private onUpdate = async () => {
+    const { ref } = this.props.wallet
+    await ref.syncChildChain()
+    this.forceUpdate()
   }
 }
 

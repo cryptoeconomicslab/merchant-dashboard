@@ -133,4 +133,24 @@ export class WalletStorage {
       })
     return Promise.resolve(true)
   }
+
+  searchActions(blkNum) {
+    const storeName = 'UserAction'
+    return new Promise(( resolve, reject ) => {
+      const actions = []
+      this.db.transaction(storeName, 'readwrite')
+        .objectStore(storeName)
+        .index('id')
+        .getAll()
+        .onsuccess = (e) => {
+          let cursor = e.target.result
+          if (cursor) {
+            actions.push(cursor.value)
+            cursor.continue()
+          } else {
+            resolve(actions)
+          }
+        }
+    })
+  }
 }
