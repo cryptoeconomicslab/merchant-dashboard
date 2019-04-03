@@ -123,6 +123,7 @@ export class WalletStorage {
   }
 
   addAction(actionId, blkNum, value) {
+    console.log('add action', actionId, value)
     const storeName = 'UserAction'
     this.db.transaction(storeName, 'readwrite')
       .objectStore(storeName)
@@ -134,23 +135,14 @@ export class WalletStorage {
     return Promise.resolve(true)
   }
 
-  searchActions(blkNum) {
+  searchActions = (blkNum) => {
     const storeName = 'UserAction'
-    return new Promise(( resolve, reject ) => {
-      const actions = []
-      this.db.transaction(storeName, 'readwrite')
+    return new Promise((resolve, reject) => {
+      this.db.transaction(storeName, 'readonly')
         .objectStore(storeName)
-        .index('id')
-        .getAll()
-        .onsuccess = (e) => {
-          let cursor = e.target.result
-          if (cursor) {
-            actions.push(cursor.value)
-            cursor.continue()
-          } else {
-            resolve(actions)
-          }
-        }
-    })
+        .getAll().onsuccess = function(event) {
+          resolve(event.target.result);
+        };
+    });
   }
 }
