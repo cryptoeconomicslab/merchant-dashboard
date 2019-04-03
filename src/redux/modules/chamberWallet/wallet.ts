@@ -119,10 +119,11 @@ const reducer = (state: State = initialState, action: WalletAction): State => {
 export default reducer
 
 // Thunks
-const onWalletLoaded = (wallet: ChamberWallet, dispatch: Dispatch) => {
+const onWalletLoaded = async (wallet: ChamberWallet, dispatch: Dispatch) => {
   dispatch(loadWalletSuccess(wallet))
+  await wallet.init()
+  await wallet.syncChildChain()
   // TODO: how to load transactions on initial mount
-  console.log('addEventListeners')
   wallet.addListener('receive', value => {
     console.log('received!!')
     // TODO: change timestamp
@@ -131,7 +132,7 @@ const onWalletLoaded = (wallet: ChamberWallet, dispatch: Dispatch) => {
   })
 
   wallet.addListener('updated', value => {
-    console.log('updated', value)
+    console.log('updated!!', value)
   })
 }
 
@@ -140,9 +141,9 @@ export const loadWallet = () => {
     dispatch(loadWalletStart())
 
     // Load wallet if in storage
-    const wallet = WalletFactory.loadWallet()
+    const wallet = await WalletFactory.loadWallet()
     if (wallet) {
-      onWalletLoaded(wallet, dispatch)
+      await onWalletLoaded(wallet, dispatch)
     } else {
       dispatch(setWalletStatus(WALLET_STATUS.NO_WALLET))
     }
@@ -157,7 +158,7 @@ export const createWallet = (privateKey: string) => {
 
     try {
       const wallet = WalletFactory.createWallet({ privateKey })
-      onWalletLoaded(wallet, dispatch)
+      await onWalletLoaded(wallet, dispatch)
     } catch (e) {
       dispatch(loadWalletFail(e)) // TODO: make custom error ErrorCreateWallet
     }

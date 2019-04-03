@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux'
+import { ChamberResult } from '@layer2/core'
 import { AppState } from '../index'
 
 // CONSTANTS
@@ -21,8 +22,9 @@ export enum TRANSFER_ACTION_TYPES {
 }
 
 // Action creators
-export const transferStart = () => ({
-  type: TRANSFER_ACTION_TYPES.TRANSFER_START
+export const transferStart = ({ to, amount }) => ({
+  type: TRANSFER_ACTION_TYPES.TRANSFER_START,
+  payload: { to, amount }
 })
 
 export const transferSuccess = () => ({
@@ -123,19 +125,19 @@ export const send = () => async (
   dispatch: Dispatch,
   getState: () => AppState
 ) => {
-  dispatch(transferStart())
   const state = getState()
-  const ref = state.chamberWallet.wallet.ref
   const { to, amount } = state.chamberWallet.transfer
+  dispatch(transferStart({ to, amount }))
+  const ref = state.chamberWallet.wallet.ref
   // TODO: validation
   // TODO: handle error on return value
-  // TODO: use redux store
+  // TODO: store tokenId on redux store
   const tokenId = 0
-  try {
-    await ref.transfer(to, tokenId, amount.toString())
-  } catch (e) {
-    dispatch(transferFail(e))
-    return
+  let result: ChamberResult<boolean>
+  result = await ref.transfer(to, tokenId, amount.toString())
+  if (result.isOk()) {
+    dispatch(transferSuccess())
+  } else {
+    dispatch(transferFail(new Error('transfer fail with some reason')))
   }
-  dispatch(transferSuccess())
 }
