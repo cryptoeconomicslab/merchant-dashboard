@@ -46,8 +46,10 @@ class WalletCard extends React.Component<
   public async componentDidMount() {
     const { ref } = this.props.wallet
 
-    ref.init()
+    await ref.init()
+    await ref.syncChildChain()
     ref.on('updated', this.onUpdate)
+    this.forceUpdate()
   }
 
   public componentWillUnmount() {
