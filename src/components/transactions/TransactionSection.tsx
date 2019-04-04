@@ -26,8 +26,8 @@ class TransactionSection extends React.Component<StateProps> {
     return (
       <div>
         <h2>Transactions</h2>
-        {wallet.txs.map(({ tx, isFast, time }, i) => (
-          <TransactionItem key={i} tx={tx} isFast={isFast} time={time} />
+        {wallet.txs.map((value, i) => (
+          <TransactionItem key={i} value={value} />
         ))}
       </div>
     )

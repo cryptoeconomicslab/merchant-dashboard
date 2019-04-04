@@ -3,6 +3,7 @@ import { ChamberWallet } from '@layer2/wallet'
 import WalletFactory from '../../../helpers/wallet'
 import delay from '../../../utils/delay'
 import { SignedTransaction, SignedTransactionWithProof } from '@layer2/core'
+import { UserAction } from '@layer2/wallet/dist/models'
 
 // CONSTANTS
 export enum WALLET_STATUS {
@@ -20,7 +21,8 @@ export enum WALLET_ACTION_TYPES {
   LOAD_WALLET_FAIL = 'LOAD_WALLET_FAIL',
   CLEAR_WALLET_ERROR = 'CLEAR_WALLET_ERROR',
   SET_WALLET_STATUS = 'SET_WALLET_STATUS',
-  RECEIVE_TRANSACTION = 'RECEIVE_TRANSACTION'
+  RECEIVE_TRANSACTION = 'RECEIVE_TRANSACTION',
+  SET_RECEIVE_TXS = 'SET_RECEIVE_TXS'
 }
 
 // Action creators
@@ -47,6 +49,11 @@ export const setWalletStatus = (status: WALLET_STATUS) => ({
   payload: status
 })
 
+const setReceiveTx = txs => ({
+  type: WALLET_ACTION_TYPES.SET_RECEIVE_TXS,
+  payload: txs
+})
+
 const receiveTransaction = value => ({
   type: WALLET_ACTION_TYPES.RECEIVE_TRANSACTION,
   payload: value
@@ -57,11 +64,14 @@ export interface State {
   status: WALLET_STATUS
   error: Error | null
   ref: ChamberWallet | null
-  txs: Array<{
-    tx: SignedTransaction | SignedTransactionWithProof
-    isFast: boolean | undefined
-    time: Date
-  }>
+  txs: Array<
+    | {
+        tx: SignedTransaction | SignedTransactionWithProof
+        isFast: boolean | undefined
+        time: Date
+      }
+    | UserAction
+  >
 }
 
 const initialState: State = {
@@ -111,6 +121,11 @@ const reducer = (state: State = initialState, action: WalletAction): State => {
         ...state,
         txs: [action.payload, ...state.txs]
       }
+    case WALLET_ACTION_TYPES.SET_RECEIVE_TXS:
+      return {
+        ...state,
+        txs: [...action.payload]
+      }
     default:
       return state
   }
@@ -134,6 +149,9 @@ const onWalletLoaded = async (wallet: ChamberWallet, dispatch: Dispatch) => {
   wallet.addListener('updated', value => {
     console.log('updated!!', value)
   })
+
+  const actions = await wallet.getUserActions(0)
+  dispatch(setReceiveTx(actions.filter(action => action.type === 'receive')))
 }
 
 export const loadWallet = () => {

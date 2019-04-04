@@ -6,21 +6,21 @@ import {
 } from '@layer2/core'
 import { FONT_SIZE, PADDING, BORDER, RADIUS } from '../../constants/size'
 import colors from '../../constants/colors'
+import { UserAction } from '@layer2/wallet/dist/models'
 
-const TransactionItem = ({
-  tx,
-  isFast,
-  time
-}: {
+interface SentTx {
   tx: SignedTransaction | SignedTransactionWithProof
   isFast: boolean
   time: Date
-}) => {
-  console.info(tx, isFast)
+}
 
+const TransactionItem = ({ value }: { value: SentTx | UserAction }) => {
+  const { tx, isFast, time } = value as SentTx
   let from: string
   let amount: number
   let isWithProof: boolean = false
+  let timestamp = time
+
   if (tx instanceof SignedTransaction) {
     const tx0 = tx.txs[0]
     from = tx0 instanceof SplitTransaction ? tx0.from : 'NOWHERE' // TODO: implement other tx
@@ -33,10 +33,16 @@ const TransactionItem = ({
     amount = segment.end.toNumber() - segment.start.toNumber()
     isWithProof = true
   } else {
-    // TODO: implement other
-    from = 'nowhere'
-    amount = 0
+    from = (value as UserAction).address
+    amount = (value as UserAction).amount
+    isWithProof = true
+
+    timestamp = timestamp
+      ? new Date((value as UserAction).timestamp)
+      : undefined
   }
+
+  console.log(value)
 
   return (
     <div className="container">
@@ -46,7 +52,9 @@ const TransactionItem = ({
         ) : (
           <span className="tag warn">Without Proof</span>
         )}
-        <span className="timestamp">{time.toISOString()}</span>
+        {timestamp && (
+          <span className="timestamp">{timestamp.toISOString()}</span>
+        )}
       </div>
       <div>
         <label>From</label>
