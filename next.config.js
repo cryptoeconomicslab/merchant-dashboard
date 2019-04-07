@@ -3,6 +3,13 @@ const withTypescript = require('@zeit/next-typescript')
 const Dotenv = require('dotenv-webpack')
 
 module.exports = withTypescript({
+  exportPathMap: function() {
+    return {
+      '/': { page: '/' },
+      '/Config': { page: '/Config' },
+      '/Transactions': { page: '/Transactions' }
+    }
+  },
   webpack(config, options) {
     config.plugins.push(new Dotenv())
     config.plugins.push(new webpack.NormalModuleReplacementPlugin(/^mqtt$/, "mqtt/dist/mqtt.js"))

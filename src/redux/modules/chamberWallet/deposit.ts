@@ -20,8 +20,9 @@ export enum DEPOSIT_ACTION_TYPES {
 }
 
 // Action creators
-export const depositStart = () => ({
-  type: DEPOSIT_ACTION_TYPES.DEPOSIT_START
+export const depositStart = (amount, token) => ({
+  type: DEPOSIT_ACTION_TYPES.DEPOSIT_START,
+  payload: { amount, token }
 })
 
 export const depositSuccess = () => ({
@@ -86,24 +87,31 @@ export default reducer
 
 // thunks
 export const deposit = (
-  ether: number
+  amount: number
 ): ThunkAction<void, AppState, void, any> => async (
   dispatch: Dispatch,
   getState /** TODO: add util Type for getState */
 ) => {
-  dispatch(depositStart())
   const state = getState()
+  const token = state.chamberWallet.wallet.selectedToken
+  dispatch(depositStart(amount, token))
   const ref: ChamberWallet = state.chamberWallet.wallet.ref
 
-  await ref.deposit(ether.toString())
-  // TODO: swithc based on result.
-  // currently @layer2/wallet does return no value.
-  // Fix @layer2/wallet ChamberWallet.deposit to return result value.
-  // if (result.success) {
-  //   dispatch(depositSuccess())
-  // } else {
-  //   dispatch(depositFail(result.error))
-  // }
+  let result
+  try {
+    result =
+      token.id === 0
+        ? await ref.deposit(amount.toString())
+        : await ref.depositERC20(token.address, amount)
+  } catch (e) {
+    console.error(e)
+    dispatch(depositFail(e))
+    return
+  }
 
-  dispatch(depositSuccess())
+  if (result.isOk()) {
+    dispatch(depositSuccess())
+  } else {
+    dispatch(depositFail(result.error()))
+  }
 }

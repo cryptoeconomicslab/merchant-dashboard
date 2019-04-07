@@ -1,7 +1,5 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { Dispatch } from 'redux'
-import { ThunkDispatch } from 'redux-thunk'
 import { AppState } from '../../redux/modules'
 import {
   DEPOSIT_STATUS,
@@ -10,13 +8,15 @@ import {
 } from '../../redux/modules/chamberWallet/deposit'
 import {
   WALLET_STATUS,
-  State as WalletState
+  State as WalletState,
+  changeToken
 } from '../../redux/modules/chamberWallet/wallet'
 import UTXOList from './UTXOList'
 import TransferSection from './TransferSection'
 import { Button, LoadingSpinner } from '../common'
 import { FONT_SIZE, PADDING, BORDER, MARGIN } from '../../constants/size'
 import colors from '../../constants/colors'
+import { getTokenName } from '../../helpers/utils'
 
 interface Props {
   walletName: string
@@ -28,7 +28,8 @@ interface StateProps {
 }
 
 interface DispatchProps {
-  deposit: (ether: number) => void
+  deposit: (amount: number) => void
+  changeToken: (token: { address: string; id: number }) => void
 }
 
 interface State {
@@ -73,15 +74,27 @@ class WalletCard extends React.Component<
     }
 
     const { ref } = wallet
-    const balance = ref.getBalance()
+    const tokenId = wallet.selectedToken.id
+    const balance = ref.getBalance(tokenId)
     const depositStatus = this.props.depositState.status
     const utxos = ref.getUTXOArray()
 
     return (
       <main className="container">
         <section className="title-section">
-          <h2 className="wallet-title">{walletName}</h2>
-          <p className="address">{ref.getAddress()}</p>
+          <div>
+            <h2 className="wallet-title">{walletName}</h2>
+            <p className="address">{ref.getAddress()}</p>
+          </div>
+          <div>
+            <select onChange={this.handleChangeToken} value={tokenId}>
+              {wallet.tokens.map(token => (
+                <option key={token.id} value={token.id}>
+                  {getTokenName(token.id)}
+                </option>
+              ))}
+            </select>
+          </div>
         </section>
         <section className="balance-section">
           {/* Balance section */}
@@ -210,6 +223,13 @@ class WalletCard extends React.Component<
     await ref.syncChildChain()
     this.forceUpdate()
   }
+
+  private handleChangeToken = e => {
+    const id = Number(e.target.value)
+    const { wallet } = this.props
+    const selectedToken = wallet.tokens.find(t => t.id === id)
+    this.props.changeToken(selectedToken)
+  }
 }
 
 export default connect(
@@ -217,9 +237,8 @@ export default connect(
     wallet: state.chamberWallet.wallet,
     depositState: state.chamberWallet.deposit
   }),
-  (dispatch: Dispatch): DispatchProps => ({
-    deposit: (ether: number) => {
-      ;(dispatch as ThunkDispatch<void, AppState, any>)(deposit(ether))
-    }
-  })
+  {
+    deposit,
+    changeToken
+  }
 )(WalletCard)

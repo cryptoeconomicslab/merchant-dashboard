@@ -22,7 +22,9 @@ export enum WALLET_ACTION_TYPES {
   CLEAR_WALLET_ERROR = 'CLEAR_WALLET_ERROR',
   SET_WALLET_STATUS = 'SET_WALLET_STATUS',
   RECEIVE_TRANSACTION = 'RECEIVE_TRANSACTION',
-  SET_RECEIVE_TXS = 'SET_RECEIVE_TXS'
+  SET_RECEIVE_TXS = 'SET_RECEIVE_TXS',
+  TOKEN_LOADED = 'TOKEN_LOADED',
+  CHANGE_TOKEN = 'CHANGE_TOKEN'
 }
 
 // Action creators
@@ -59,6 +61,16 @@ const receiveTransaction = value => ({
   payload: value
 })
 
+export const changeToken = token => ({
+  type: WALLET_ACTION_TYPES.CHANGE_TOKEN,
+  payload: token
+})
+
+export const tokenLoaded = tokens => ({
+  type: WALLET_ACTION_TYPES.TOKEN_LOADED,
+  payload: tokens
+})
+
 // Reducer
 export interface State {
   status: WALLET_STATUS
@@ -72,13 +84,26 @@ export interface State {
       }
     | UserAction
   >
+  tokens: Array<{
+    id: number
+    address: string
+  }>
+  selectedToken: {
+    id: number
+    address: string
+  }
 }
 
 const initialState: State = {
   status: WALLET_STATUS.INITIAL,
   ref: null,
   error: null,
-  txs: []
+  txs: [],
+  tokens: [],
+  selectedToken: {
+    id: 0,
+    address: '"0x0000000000000000000000000000000000000000"'
+  }
 }
 
 interface WalletAction {
@@ -126,6 +151,16 @@ const reducer = (state: State = initialState, action: WalletAction): State => {
         ...state,
         txs: [...action.payload]
       }
+    case WALLET_ACTION_TYPES.TOKEN_LOADED:
+      return {
+        ...state,
+        tokens: action.payload
+      }
+    case WALLET_ACTION_TYPES.CHANGE_TOKEN:
+      return {
+        ...state,
+        selectedToken: action.payload
+      }
     default:
       return state
   }
@@ -150,6 +185,8 @@ const onWalletLoaded = async (wallet: ChamberWallet, dispatch: Dispatch) => {
     console.log('updated!!', value)
   })
 
+  const tokens = await wallet.getAvailableTokens()
+  dispatch(tokenLoaded(tokens))
   const actions = await wallet.getUserActions(0)
   dispatch(setReceiveTx(actions.filter(action => action.type === 'receive')))
 }

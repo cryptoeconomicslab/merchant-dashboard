@@ -3,6 +3,8 @@
   "scripts": {
     "start": "next src -p 8081",
     "build": "next build",
+    "build:testnet": "NODE_ENV=testnet next build src",
+    "export": "next export src",
     "tsc": "tsc --no-emit",
     "lint": "tslint ./src/**/*",
     "format": "tslint ./src/**/* --fix"
