@@ -1,6 +1,7 @@
 import { Dispatch } from 'redux'
 import { ChamberResult } from '@layer2/core'
 import { AppState } from '../index'
+import { getTokenMaxDigits } from '../../../helpers/utils'
 
 // CONSTANTS
 export enum TRANSFER_STATUS {
@@ -134,7 +135,8 @@ export const send = () => async (
   // TODO: store tokenId on redux store
   const tokenId = state.chamberWallet.wallet.selectedToken.id
   let result: ChamberResult<boolean>
-  result = await ref.transfer(to, tokenId, amount.toString())
+  console.log('amount:', getTokenMaxDigits(tokenId, amount).toString())
+  result = await ref.transfer(to, tokenId, getTokenMaxDigits(tokenId, amount).toString())
   if (result.isOk()) {
     dispatch(transferSuccess())
   } else {

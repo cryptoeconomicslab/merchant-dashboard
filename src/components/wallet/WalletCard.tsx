@@ -16,7 +16,7 @@ import TransferSection from './TransferSection'
 import { Button, LoadingSpinner } from '../common'
 import { FONT_SIZE, PADDING, BORDER, MARGIN } from '../../constants/size'
 import colors from '../../constants/colors'
-import { getTokenName } from '../../helpers/utils'
+import { getTokenName, getTokenMinDigits } from '../../helpers/utils'
 
 interface Props {
   walletName: string
@@ -101,7 +101,8 @@ class WalletCard extends React.Component<
           <h3 className="balance-title">Balance</h3>
           <div>
             <span className="balance-value">
-              {balance.toNumber().toLocaleString()}
+              {getTokenMinDigits(tokenId, balance)}
+              <span className="balance-unit">{getTokenName(tokenId)}</span>
             </span>
           </div>
         </section>
@@ -174,6 +175,11 @@ class WalletCard extends React.Component<
 
           .balance-value {
             font-size: ${FONT_SIZE.VERY_LARGE};
+          }
+
+          .balance-unit {
+            font-size: ${FONT_SIZE.SEMI_LARGE};
+            margin-left: ${MARGIN.MEDIUM};
           }
 
           .control-section {
