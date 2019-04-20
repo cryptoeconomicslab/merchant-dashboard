@@ -6,7 +6,7 @@
     "build:testnet": "NODE_ENV=testnet next build src",
     "export": "next export src",
     "tsc": "tsc --no-emit",
-    "lint": "tslint ./src/**/*",
+    "lint": "tslint ./src/**/*.{ts,tsx}",
     "format": "tslint ./src/**/* --fix"
   },
   "dependencies": {
